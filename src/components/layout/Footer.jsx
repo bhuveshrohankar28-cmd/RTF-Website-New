@@ -1,19 +1,19 @@
-import { Link } from 'react-router-dom';
-import { Instagram, Linkedin, Facebook, ArrowRight } from 'lucide-react';
-import { socials, contactInfo } from '../../data/stats';
+import { Link } from "react-router-dom";
+import { Instagram, Linkedin, Facebook, ArrowRight } from "lucide-react";
+import { socials, contactInfo } from "../../data/stats";
 
 const quickLinks = [
-  { path: '/', label: 'Home' },
-  { path: '/about', label: 'About' },
-  { path: '/projects', label: 'Projects' },
-  { path: '/team', label: 'Team' },
+  { path: "/", label: "Home" },
+  { path: "/about", label: "About" },
+  { path: "/projects", label: "Projects" },
+  { path: "/team", label: "Team" },
 ];
 
 const resourceLinks = [
-  { path: '/timeline', label: 'Timeline' },
-  { path: '/gallery', label: 'Gallery' },
-  { path: '/contact', label: 'Contact' },
-  { path: '/login', label: 'Member Portal' },
+  { path: "/timeline", label: "Timeline" },
+  { path: "/gallery", label: "Gallery" },
+  { path: "/contact", label: "Contact" },
+  { path: "/login", label: "Member Portal" },
 ];
 
 export default function Footer() {
@@ -28,15 +28,17 @@ export default function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <div className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center">
-                <span className="font-display font-bold text-cyan-400 text-xs">RTF</span>
+                <span className="font-display font-bold text-cyan-400 text-xs">
+                  RTF
+                </span>
               </div>
               <span className="font-display font-semibold text-text-primary">
                 Robo-Tech Forum
               </span>
             </Link>
             <p className="text-text-secondary text-sm leading-relaxed mb-6 max-w-xs">
-              Engineering excellence. Built by students. Recognized by industry. The premier
-              robotics club at GCoEA, Amravati.
+              Engineering excellence. Built by students. Recognized by industry.
+              The premier robotics club at GCoEA, Amravati.
             </p>
             <div className="flex items-center gap-3">
               {socials.facebook && (
@@ -113,18 +115,49 @@ export default function Footer() {
           <div>
             <h4 className="text-label text-text-muted mb-4">Get In Touch</h4>
             <ul className="space-y-3 mb-6">
-              <li className="text-sm text-text-secondary">{contactInfo.email}</li>
+            <li>
+  <a
+    href="https://mail.google.com/mail/?view=cm&fs=1&to=robotechforum@gcoea.ac.in"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm text-text-secondary hover:text-cyan-400 transition-colors duration-200 break-all"
+  >
+    {contactInfo.email}
+  </a>
+</li>
               <li className="text-sm text-text-secondary leading-relaxed">
                 {contactInfo.address}
               </li>
-              <li className="text-sm text-text-secondary">{contactInfo.hours}</li>
             </ul>
+
+            {/* Google Map - Between Address and Hours */}
+            <div className="rounded-lg overflow-hidden border border-border h-48 mb-4">
+              <iframe
+                src="https://www.google.com/maps?q=Government+College+of+Engineering+Amravati&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                title="GCoEA Location with Marker"
+              />
+            </div>
+
+            <ul className="space-y-3 mb-6">
+              <li className="text-sm text-text-secondary">
+                {contactInfo.hours}
+              </li>
+            </ul>
+
             <Link
               to="/sponsors"
               className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-mono font-semibold tracking-wider text-deep bg-amber-500 rounded-button hover:bg-amber-400 transition-colors duration-200 group"
             >
               BECOME A SPONSOR
-              <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight
+                size={14}
+                className="group-hover:translate-x-0.5 transition-transform"
+              />
             </Link>
           </div>
         </div>
@@ -132,7 +165,8 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-text-muted text-center sm:text-left">
-            © {new Date().getFullYear()} The Robo-Tech Forum, GCoEA Amravati. All rights reserved.
+            © {new Date().getFullYear()} The Robo-Tech Forum, GCoEA Amravati.
+            All rights reserved.
           </p>
           <p className="text-xs text-text-muted">
             We Learn. We Create. We Teach.
