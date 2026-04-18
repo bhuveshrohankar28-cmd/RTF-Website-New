@@ -1,9 +1,17 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+fix/dynamic-projects-cms
 import { X, ChevronLeft, ChevronRight, ExternalLink, Users, Trophy, Search, AlertTriangle, RefreshCw } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 
 import { pageTransition, staggerContainer, slideInRight } from '../lib/animations';
+=======
+import { X, ChevronLeft, ChevronRight , ExternalLink, Users, Trophy } from 'lucide-react';
+import { FaGithub } from 'react-icons/fa';
+
+import { pageTransition,fadeUp, staggerContainer, slideInRight } from '../lib/animations';
+ main
 import SectionHeader from '../components/ui/SectionHeader';
 import ProjectCard from '../components/ui/ProjectCard';
 import { useProjects } from '../hooks/useProjects';
@@ -16,6 +24,7 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [imageIndex, setImageIndex] = useState(0);
 
+fix/dynamic-projects-cms
   // Derived filter categories from projects
   const uniqueCategories = useMemo(() => {
     const cats = new Set(projects.map(p => p.category));
@@ -48,7 +57,15 @@ export default function Projects() {
     });
   }, [projects, activeCategory, searchQuery]);
 
-  // Close modal on Escape
+  //done
+  const filtered = useMemo(() => {
+    return activeCategory === 'ALL'
+      ? projects
+      : projects.filter((p) => p.category === activeCategory);
+  }, [activeCategory, projects]);
+ main
+
+  //  Close modal on Escape
   useEffect(() => {
     const handler = (e) => {
       if (e.key === 'Escape') setSelectedProject(null);
@@ -57,11 +74,19 @@ export default function Projects() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  // Lock body scroll when modal open
+  // Lock scroll when modal open
   useEffect(() => {
     document.body.style.overflow = selectedProject ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [selectedProject]);
+
+  //done
+  //  Reset image index when category changes
+  useEffect(() => {
+    setImageIndex(0);
+  }, [activeCategory]);
 
   const openProject = useCallback((project) => {
     setImageIndex(0);
@@ -80,6 +105,8 @@ export default function Projects() {
       <SectionHeader
         label="// OUR PORTFOLIO"
         title="Projects"
+
+ fix/dynamic-projects-cms
         subtitle="From autonomous rovers to competition-winning robots — explore projects built by RTF engineers."
       />
 
@@ -145,6 +172,51 @@ export default function Projects() {
                   backgroundSize: '200% 100%',
                   animation: 'shimmer 1.5s infinite linear'
                 }}
+
+        subtitle="Explore projects built by developers."
+      />
+
+      {/*  Filter Tabs */}
+      <div className="max-w-7xl mx-auto mb-12 flex flex-wrap justify-center gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => setActiveCategory(cat)}
+            className={`px-4 py-2 text-xs font-mono font-semibold tracking-wider rounded-button border transition-all duration-200 ${
+              activeCategory === cat
+                ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/40'
+                : 'bg-transparent text-gray-400 border-gray-700 hover:text-white hover:border-gray-500'
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/*  Project Grid */}
+      <motion.div
+        key={activeCategory} //done
+        layout
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+
+        <AnimatePresence mode="popLayout">  
+          {filtered.map((project) => (
+            <motion.div
+              key={`${project.id}-${activeCategory}`} // done
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+            >
+              <ProjectCard
+                project={project}
+                onClick={() => openProject(project)}
+main
               />
               <div className="p-5 flex flex-col flex-1 gap-4">
                 <div 
@@ -240,6 +312,7 @@ export default function Projects() {
             </AnimatePresence>
           </motion.div>
 
+ fix/dynamic-projects-cms
           {/* No results state */}
           {filtered.length === 0 && (
             <div className="flex flex-col items-center justify-center p-12 text-center mt-8">
@@ -261,6 +334,13 @@ export default function Projects() {
             </div>
           )}
         </div>
+
+      
+      {filtered.length === 0 && (
+        <p className="text-center text-gray-400 font-mono mt-12">
+          No projects found in this category.
+        </p>
+ main
       )}
 
       {/* ─── Detail Modal (slide-in panel from right) ─── */}
@@ -273,7 +353,10 @@ export default function Projects() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedProject(null)}
+ fix/dynamic-projects-cms
               className="fixed inset-0 z-50 bg-[#060B12]/80 backdrop-blur-sm"
+
+ main
             />
 
             {/* Panel */}
@@ -282,19 +365,33 @@ export default function Projects() {
               initial="hidden"
               animate="visible"
               exit="exit"
+
+ fix/dynamic-projects-cms
               className="fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-[#0D1520] border-l border-[#1E2D42] overflow-y-auto"
+
+              className="fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-gray-900 border-l border-gray-700 overflow-y-auto"
+ main
             >
-              {/* Close button */}
+              {/* Close Button */}
               <button
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close project details"
+
+fix/dynamic-projects-cms
                 className="absolute top-4 right-4 z-10 w-10 h-10 rounded-lg bg-[rgba(15,23,42,0.6)] backdrop-blur-md border border-[#1E2D42] flex items-center justify-center text-[#94A3B8] hover:text-[#22D3EE] hover:border-[rgba(34,211,238,0.4)] transition-all"
+
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-lg bg-gray-800 border border-gray-600 flex items-center justify-center"
+ main
               >
                 <X size={18} />
               </button>
 
               {/* Image Gallery */}
+ fix/dynamic-projects-cms
               <div className="relative h-64 sm:h-80 bg-[#141E2E] overflow-hidden">
+
+          <div className="relative h-64 sm:h-80 bg-elevated overflow-hidden">
+ main
                 <AnimatePresence mode="wait">
                   {selectedProject.images && selectedProject.images.length > 0 ? (
                     <motion.img
