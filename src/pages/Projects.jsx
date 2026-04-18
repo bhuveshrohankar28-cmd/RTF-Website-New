@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, ExternalLink, Users, Trophy } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight , ExternalLink, Users, Trophy } from 'lucide-react';
 import { FaGithub } from 'react-icons/fa';
 
-import { pageTransition, fadeUp, staggerContainer, slideInRight } from '../lib/animations';
+import { pageTransition,fadeUp, staggerContainer, slideInRight } from '../lib/animations';
 import SectionHeader from '../components/ui/SectionHeader';
 import ProjectCard from '../components/ui/ProjectCard';
 import { projects, categories } from '../data/projects';
@@ -13,12 +13,14 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [imageIndex, setImageIndex] = useState(0);
 
-  const filtered =
-    activeCategory === 'ALL'
+  //done
+  const filtered = useMemo(() => {
+    return activeCategory === 'ALL'
       ? projects
       : projects.filter((p) => p.category === activeCategory);
+  }, [activeCategory, projects]);
 
-  // Close modal on Escape
+  //  Close modal on Escape
   useEffect(() => {
     const handler = (e) => {
       if (e.key === 'Escape') setSelectedProject(null);
@@ -27,11 +29,19 @@ export default function Projects() {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
-  // Lock body scroll when modal open
+  // Lock scroll when modal open
   useEffect(() => {
     document.body.style.overflow = selectedProject ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [selectedProject]);
+
+  //done
+  //  Reset image index when category changes
+  useEffect(() => {
+    setImageIndex(0);
+  }, [activeCategory]);
 
   const openProject = useCallback((project) => {
     setImageIndex(0);
@@ -50,10 +60,10 @@ export default function Projects() {
       <SectionHeader
         label="// OUR PORTFOLIO"
         title="Projects"
-        subtitle="From autonomous rovers to competition-winning robots — explore 50+ projects built by RTF engineers."
+        subtitle="Explore projects built by developers."
       />
 
-      {/* Filter Tabs */}
+      {/*  Filter Tabs */}
       <div className="max-w-7xl mx-auto mb-12 flex flex-wrap justify-center gap-2">
         {categories.map((cat) => (
           <button
@@ -62,7 +72,7 @@ export default function Projects() {
             className={`px-4 py-2 text-xs font-mono font-semibold tracking-wider rounded-button border transition-all duration-200 ${
               activeCategory === cat
                 ? 'bg-cyan-500/15 text-cyan-400 border-cyan-500/40'
-                : 'bg-transparent text-text-muted border-border/50 hover:text-text-secondary hover:border-border'
+                : 'bg-transparent text-gray-400 border-gray-700 hover:text-white hover:border-gray-500'
             }`}
           >
             {cat}
@@ -70,18 +80,20 @@ export default function Projects() {
         ))}
       </div>
 
-      {/* Project Grid */}
+      {/*  Project Grid */}
       <motion.div
+        key={activeCategory} //done
         layout
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
         className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
-        <AnimatePresence mode="popLayout">
+
+        <AnimatePresence mode="popLayout">  
           {filtered.map((project) => (
             <motion.div
-              key={project.id}
+              key={`${project.id}-${activeCategory}`} // done
               layout
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -97,9 +109,10 @@ export default function Projects() {
         </AnimatePresence>
       </motion.div>
 
+      
       {filtered.length === 0 && (
-        <p className="text-center text-text-muted font-mono mt-12">
-          No projects found in this category yet.
+        <p className="text-center text-gray-400 font-mono mt-12">
+          No projects found in this category.
         </p>
       )}
 
@@ -113,7 +126,7 @@ export default function Projects() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedProject(null)}
-              className="fixed inset-0 z-50 bg-void/80 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm"
             />
 
             {/* Panel */}
@@ -122,19 +135,19 @@ export default function Projects() {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-surface border-l border-border overflow-y-auto"
+              className="fixed top-0 right-0 z-50 h-full w-full max-w-xl bg-gray-900 border-l border-gray-700 overflow-y-auto"
             >
-              {/* Close button */}
+              {/* Close Button */}
               <button
                 onClick={() => setSelectedProject(null)}
                 aria-label="Close project details"
-                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-lg bg-elevated border border-border flex items-center justify-center text-text-muted hover:text-cyan-400 hover:border-cyan-500/40 transition-all"
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-lg bg-gray-800 border border-gray-600 flex items-center justify-center"
               >
                 <X size={18} />
               </button>
 
               {/* Image Gallery */}
-              <div className="relative h-64 sm:h-80 bg-elevated overflow-hidden">
+          <div className="relative h-64 sm:h-80 bg-elevated overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.img
                     key={imageIndex}
