@@ -15,7 +15,6 @@ export default function ProjectCard({ project, onOpenDetail, index = 0 }) {
     images,
     github,
     demo,
-    achievements,
     featured
   } = project;
 
@@ -35,7 +34,8 @@ export default function ProjectCard({ project, onOpenDetail, index = 0 }) {
   };
 
   const badgeClass = categoryColors[category] || categoryColors.DEFAULT;
-  const statusDisplay = statusConfig[status] || statusConfig.COMPLETED;
+  const normalizedStatus = String(status).toUpperCase();
+  const statusDisplay = statusConfig[normalizedStatus] || statusConfig.COMPLETED;
 
   return (
     <motion.article
@@ -46,7 +46,7 @@ export default function ProjectCard({ project, onOpenDetail, index = 0 }) {
         ease: [0.22, 1, 0.36, 1],
         delay: index * 0.06
       }}
-      onClick={() => onOpenDetail(project)}
+      onClick={() => onOpenDetail?.(project)}
       className="group relative bg-[#0D1520] border border-[#1E2D42] rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:border-[rgba(34,211,238,0.4)] hover:-translate-y-1 hover:shadow-[0_0_0_1px_rgba(34,211,238,0.15),0_20px_40px_rgba(0,0,0,0.4),0_0_60px_rgba(34,211,238,0.05)] flex flex-col h-full"
     >
       {/* IMAGE SECTION */}
@@ -89,7 +89,7 @@ export default function ProjectCard({ project, onOpenDetail, index = 0 }) {
             style={{ opacity: statusDisplay.pulse ? undefined : 0.8 }}
           />
           <span className="text-[9px] uppercase font-mono tracking-[0.08em] text-[#E2E8F0]">
-            {status}
+            {normalizedStatus}
           </span>
         </div>
 
