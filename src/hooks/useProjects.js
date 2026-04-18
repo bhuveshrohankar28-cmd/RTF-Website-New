@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { projects as fallbackProjects } from '../data/projects';
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1Xfkn0g41BRKiutGca0_0Xb23k4_D9S_oq8czXLt4EX8/export?format=csv&gid=1394685927';
@@ -49,13 +49,13 @@ export function useProjects() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
+    const startTime = Date.now();
+    const MIN_LOADING_TIME = 800;
+
     try {
       setLoading(true);
       setError(null);
-      
-      const startTime = Date.now();
-      const MIN_LOADING_TIME = 800; // ms for aesthetic skeleton animation
 
       // Check session storage cache
       const cached = sessionStorage.getItem(CACHE_KEY);
@@ -94,16 +94,21 @@ export function useProjects() {
 
     } catch (err) {
       setError(err.message);
+      // Enforce minimum skeleton delay even on error path
+      const elapsed = Date.now() - startTime;
+      if (elapsed < MIN_LOADING_TIME) {
+        await new Promise(resolve => setTimeout(resolve, MIN_LOADING_TIME - elapsed));
+      }
       // Fallback to offline static data
       setProjects(fallbackProjects);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  }, [fetchProjects]);
 
   return { projects, loading, error, refetch: fetchProjects };
 }
