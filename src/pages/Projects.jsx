@@ -44,11 +44,11 @@ export default function Projects() {
     return projects.filter((p) => {
       const matchCategory = activeCategory === 'ALL' || p.category === activeCategory;
       const q = searchQuery.toLowerCase();
-      const matchSearch = q === '' || 
-        p.title.toLowerCase().includes(q) || 
+      const matchSearch = q === '' ||
+        p.title.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
         p.techStack.some(t => t.toLowerCase().includes(q));
-      
+
       return matchCategory && matchSearch;
     });
   }, [projects, activeCategory, searchQuery]);
@@ -98,11 +98,11 @@ export default function Projects() {
       {/* Search and Filters */}
       <div className="max-w-7xl mx-auto mb-10">
         <div className="flex flex-col md:flex-row gap-6 items-center justify-between mb-8">
-          
+
           {/* Search Bar */}
           <div className="relative w-full max-w-[320px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[#475569]" size={16} />
-            <input 
+            <input
               type="text"
               placeholder="Search projects..."
               value={searchQuery}
@@ -117,11 +117,10 @@ export default function Projects() {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-[18px] py-[8px] text-[11px] font-mono tracking-[0.1em] rounded-[4px] border transition-all duration-200 ${
-                  activeCategory === cat
-                    ? 'bg-[rgba(34,211,238,0.1)] text-[#22D3EE] border-[#22D3EE] shadow-[0_0_16px_rgba(34,211,238,0.1)]'
-                    : 'bg-transparent text-[#475569] border-[#1E2D42] hover:text-[#94A3B8] hover:border-[rgba(34,211,238,0.3)]'
-                }`}
+                className={`px-[18px] py-[8px] text-[11px] font-mono tracking-[0.1em] rounded-[4px] border transition-all duration-200 ${activeCategory === cat
+                  ? 'bg-[rgba(34,211,238,0.1)] text-[#22D3EE] border-[#22D3EE] shadow-[0_0_16px_rgba(34,211,238,0.1)]'
+                  : 'bg-transparent text-[#475569] border-[#1E2D42] hover:text-[#94A3B8] hover:border-[rgba(34,211,238,0.3)]'
+                  }`}
               >
                 {cat} ({categoryCounts[cat] || 0})
               </button>
@@ -143,8 +142,8 @@ export default function Projects() {
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="bg-[#0D1520] rounded-xl border border-[#1E2D42] h-[400px] overflow-hidden flex flex-col">
-              <div 
-                className="h-[200px] w-full relative" 
+              <div
+                className="h-[200px] w-full relative"
                 style={{
                   background: 'linear-gradient(90deg, #0D1520 0%, #141E2E 50%, #0D1520 100%)',
                   backgroundSize: '200% 100%',
@@ -152,7 +151,7 @@ export default function Projects() {
                 }}
               />
               <div className="p-5 flex flex-col flex-1 gap-4">
-                <div 
+                <div
                   className="h-[20px] w-[70%] rounded-[4px]"
                   style={{
                     background: 'linear-gradient(90deg, #0D1520 0%, #141E2E 50%, #0D1520 100%)',
@@ -161,7 +160,7 @@ export default function Projects() {
                   }}
                 />
                 <div className="flex flex-col gap-2">
-                  <div 
+                  <div
                     className="h-[14px] w-[90%] rounded-[2px]"
                     style={{
                       background: 'linear-gradient(90deg, #0D1520 0%, #141E2E 50%, #0D1520 100%)',
@@ -169,7 +168,7 @@ export default function Projects() {
                       animation: 'shimmer 1.5s infinite linear'
                     }}
                   />
-                  <div 
+                  <div
                     className="h-[14px] w-[60%] rounded-[2px]"
                     style={{
                       background: 'linear-gradient(90deg, #0D1520 0%, #141E2E 50%, #0D1520 100%)',
@@ -180,7 +179,7 @@ export default function Projects() {
                 </div>
                 <div className="flex gap-2 mt-auto">
                   {Array.from({ length: 3 }).map((_, j) => (
-                    <div 
+                    <div
                       key={j}
                       className="h-[20px] w-[50px] rounded-[3px]"
                       style={{
@@ -194,9 +193,6 @@ export default function Projects() {
               </div>
             </div>
           ))}
-          <style dangerouslySetInnerHTML={{__html: `
-            @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
-          `}} />
         </div>
       ) : error && projects.length === 0 ? (
         // Error state (no fallback data)
@@ -204,7 +200,7 @@ export default function Projects() {
           <AlertTriangle className="text-[#FBBF24] mb-4" size={40} />
           <h3 className="font-['Space_Grotesk'] text-2xl text-[#F1F5F9] mb-2">Unable to load projects</h3>
           <p className="font-mono text-[#94A3B8] mb-6">Please try again</p>
-          <button 
+          <button
             onClick={refetch}
             className="flex items-center gap-2 px-6 py-2 bg-[rgba(34,211,238,0.1)] text-[#22D3EE] border border-[#22D3EE] rounded font-mono tracking-wider hover:bg-[rgba(34,211,238,0.2)]"
           >
@@ -221,8 +217,8 @@ export default function Projects() {
             initial="hidden"
             animate="visible"
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-            style={{ 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' 
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))'
             }}
           >
             <AnimatePresence mode="popLayout">
@@ -254,13 +250,13 @@ export default function Projects() {
               <p className="text-[#94A3B8] font-['Inter'] mb-6">
                 Try a different search or category
               </p>
-              <button 
+              <button
                 onClick={() => {
                   setSearchQuery('');
                   setActiveCategory('ALL');
                 }}
                 className="px-4 py-2 font-mono text-[13px] bg-transparent text-[#22D3EE] border border-[#22D3EE] rounded hover:bg-[rgba(34,211,238,0.1)] transition-colors"
-                >
+              >
                 Clear filters
               </button>
             </div>
@@ -353,11 +349,10 @@ export default function Projects() {
                         key={i}
                         onClick={() => setImageIndex(i)}
                         aria-label={`Go to image ${i + 1}`}
-                        className={`w-2 h-2 rounded-full transition-all ${
-                          i === imageIndex
-                            ? 'bg-[#22D3EE] w-5'
-                            : 'bg-[#475569]/60 hover:bg-[#475569]'
-                        }`}
+                        className={`w-2 h-2 rounded-full transition-all ${i === imageIndex
+                          ? 'bg-[#22D3EE] w-5'
+                          : 'bg-[#475569]/60 hover:bg-[#475569]'
+                          }`}
                       />
                     ))}
                   </div>
