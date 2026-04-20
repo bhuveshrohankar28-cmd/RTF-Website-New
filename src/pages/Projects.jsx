@@ -86,7 +86,7 @@ export default function Projects() {
       {/* Error state with fallback indicator */}
       {error && projects.length > 0 && (
         <div className="max-w-7xl mx-auto mb-6 bg-cyan-900/20 border border-cyan-800/50 rounded p-3 flex justify-center text-xs font-mono text-cyan-300">
-          Showing offline data · Last updated from local cache
+          Showing offline fallback data
         </div>
       )}
 
