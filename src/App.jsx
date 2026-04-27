@@ -17,6 +17,7 @@ import Projects from './pages/Projects';
 import Team from './pages/Team';
 import Sponsors from './pages/Sponsors';
 import Timeline from './pages/Timeline';
+import Achievement from './pages/Achievement';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
@@ -33,6 +34,7 @@ function AnimatedRoutes() {
         <Route path="/team" element={<Team />} />
         <Route path="/sponsors" element={<Sponsors />} />
         <Route path="/timeline" element={<Timeline />} />
+        <Route path="/achievement" element={<Achievement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />

@@ -32,8 +32,8 @@ export default function ParallaxImage({
     return () => clearInterval(timer);
   }, [imageList.length, slideInterval]);
 
-  // Parallax effect
-  const y = useTransform(scrollYProgress, [0, 1], ['-15%', '15%']);
+  // Parallax effect: Keep translation smaller than top/bottom overflow to prevent gaps
+  const y = useTransform(scrollYProgress, [0, 1], ['-10%', '10%']);
 
   // Opacity envelope: subtle fade in/out
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.4, 1, 1, 0.4]);
@@ -41,13 +41,13 @@ export default function ParallaxImage({
   return (
     <section
       ref={ref}
-      className="relative overflow-hidden"
-      style={{ minHeight: `${height}vh` }}
+      className="relative overflow-hidden w-full flex items-center justify-center"
+      style={{ height: `${height}vh` }}
     >
       {/* Parallax image */}
       <motion.div
         style={{ y }}
-        className="absolute inset-0 -top-[20%] -bottom-[20%]"
+        className="absolute inset-0 -top-[25%] -bottom-[25%]"
       >
         {imageList.map((image, index) => (
           <img
@@ -71,9 +71,9 @@ export default function ParallaxImage({
       <div className="absolute inset-0 bg-grid opacity-30" />
 
       {/* Content */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
+      <div className="relative z-10 flex items-center justify-center px-6 w-full h-full">
         {overlay && !children && (
-          <p className="font-mono text-sm text-cyan-400/80 tracking-widest uppercase text-center max-w-xl">
+          <p className="font-mono text-sm text-cyan-400/80 tracking-widest uppercase text-center max-w-xl self-center">
             {overlay}
           </p>
         )}
