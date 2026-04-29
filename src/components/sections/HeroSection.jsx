@@ -60,7 +60,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row items-start gap-4">
               <NeoButton to="/projects" arrow>SEE OUR WORK</NeoButton>
               <NeoButton to="/about" variant="secondary">WHO WE ARE</NeoButton>
-                            <NeoButton to="/sponsors" variant="secondary">Sponser</NeoButton>
+                            {/* <NeoButton to="/sponsors" variant="secondary">Sponser</NeoButton> */}
 
             </div>
           </div>

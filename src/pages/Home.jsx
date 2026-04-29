@@ -3,6 +3,7 @@ import { pageTransition } from '../lib/animations';
 import HeroSection from '../components/sections/HeroSection';
 import StatsBar from '../components/sections/StatsBar';
 import FeaturedProjects from '../components/sections/FeaturedProjects';
+import SponsorShowcase from '../components/sections/SponsorShowcase';
 import ParallaxImage from '../components/ui/ParallaxImage';
 import TerminalContact from '../components/sections/TerminalContact';
 
@@ -33,6 +34,8 @@ export default function Home() {
         />
 
         <FeaturedProjects />
+
+        <SponsorShowcase />
 
         {/* Parallax break — competition image */}
         <ParallaxImage
