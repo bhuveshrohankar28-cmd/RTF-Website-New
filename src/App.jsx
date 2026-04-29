@@ -1,14 +1,12 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import { useLenis } from './hooks/useLenis';
 import { useLoadingManager } from './hooks/useLoadingManager';
 import { LoadingProvider, useLoading } from './context/LoadingContext';
 
 // Layout
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
-import ScrollProgressFixed from './components/layout/ScrollProgressFixed';
 import VideoIntroEnhanced from './components/layout/VideoIntroEnhanced';
 import LoadingScreen from './components/layout/LoadingScreen';
 
@@ -19,12 +17,17 @@ import Projects from './pages/Projects';
 import Team from './pages/Team';
 import Sponsors from './pages/Sponsors';
 import Timeline from './pages/Timeline';
+import Achievement from './pages/Achievement';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 
 function AnimatedRoutes() {
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="wait">
@@ -35,6 +38,7 @@ function AnimatedRoutes() {
         <Route path="/team" element={<Team />} />
         <Route path="/sponsors" element={<Sponsors />} />
         <Route path="/timeline" element={<Timeline />} />
+        <Route path="/achievement" element={<Achievement />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
@@ -50,9 +54,6 @@ function AppContent() {
   const [showButton, setShowButton] = useState(false);
   const { shouldShowIntro, markIntroComplete, assetsReady, setAssetsReady } = useLoadingManager();
   const { isLoading, loadingMessage } = useLoading();
-
-  // Buttery smooth scrolling via Lenis, synced to GSAP ScrollTrigger
-  useLenis();
 
   // Handle scroll to top button
   useEffect(() => {
@@ -88,7 +89,6 @@ function AppContent() {
 
       {/* Main Content */}
       <div className="relative min-h-screen bg-deep text-text-primary" style={{ overflowX: 'clip' }}>
-        <ScrollProgressFixed />
         <Navbar />
         <AnimatedRoutes />
         <Footer />
