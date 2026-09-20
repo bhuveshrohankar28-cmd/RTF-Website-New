@@ -4,31 +4,29 @@ import { FcGoogle } from 'react-icons/fc';
 import NeoButton from '../ui/NeoButton';
 
 /**
- * LoginForm — "Log in" view.
+ * SignUpForm — "Create Account" view.
  *
- * Structure (content only — styling pulled entirely from the existing
- * RTF design system: HoloCard-compatible spacing, `input` field classes
- * from Login.jsx, NeoButton, cyan accents):
- *   1. Header — title + "New user? Register Now" toggle
- *   2. Full-width "Continue with Google" button
- *   3. "or" divider
- *   4. Email field
- *   5. Password field w/ show/hide toggle
- *   6. "Forgot password" link (left-aligned)
- *   7. Full-width "Sign In" submit button
+ * NOTE: this is intentionally a separate, lightweight component from
+ * `RegisterForm.jsx` (which drives the full member-application flow with
+ * enrollment number / domain / etc. via `authService.registerUser`). This
+ * one matches the simple email+password "Create Account" screenshot the
+ * user asked for. If both are meant to submit to the same backend route,
+ * wire `onSubmit` here to whichever service function is appropriate.
+ *
+ * Structure:
+ *   1. Header — title + "Already have an account? Log in" toggle
+ *   2. Email field
+ *   3. Password field w/ show/hide toggle
+ *   4. Full-width "Sign Up" submit button
+ *   5. "or" divider
+ *   6. Full-width "Continue with Google" button
  *
  * @param {object} props
- * @param {() => void} props.onSwitchToSignup - called when "Register Now" is clicked
- * @param {(credentials: { email: string, password: string }) => void|Promise<void>} [props.onSubmit]
+ * @param {() => void} props.onSwitchToLogin - called when "Log in" is clicked
+ * @param {(data: { email: string, password: string }) => void|Promise<void>} [props.onSubmit]
  * @param {() => void} [props.onGoogleAuth]
- * @param {() => void} [props.onForgotPassword]
  */
-export default function LoginForm({
-  onSwitchToSignup,
-  onSubmit,
-  onGoogleAuth,
-  onForgotPassword,
-}) {
+export default function SignUpForm({ onSwitchToLogin, onSubmit, onGoogleAuth }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -45,8 +43,6 @@ export default function LoginForm({
     }
 
     if (!onSubmit) {
-      // No handler wired up yet — mirrors the existing placeholder
-      // behaviour in pages/Login.jsx until auth is connected.
       setError('Member portal coming soon. Contact RTF leader for access.');
       return;
     }
@@ -55,7 +51,7 @@ export default function LoginForm({
       setIsSubmitting(true);
       await onSubmit({ email: email.trim(), password });
     } catch (err) {
-      setError(err?.message || 'Unable to sign in. Please try again.');
+      setError(err?.message || 'Unable to create account. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -65,47 +61,30 @@ export default function LoginForm({
     <div>
       {/* Header */}
       <div className="mb-6">
-        <h2 className="text-h2 text-text-primary">Log in</h2>
+        <h2 className="text-h2 text-text-primary">Create Account</h2>
         <p className="text-sm text-text-secondary mt-2">
-          New user?{' '}
+          Already have an account?{' '}
           <button
             type="button"
-            onClick={onSwitchToSignup}
+            onClick={onSwitchToLogin}
             className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
           >
-            Register Now
+            Log in
           </button>
         </p>
-      </div>
-
-      {/* Continue with Google */}
-      <button
-        type="button"
-        onClick={onGoogleAuth}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-elevated border border-border rounded-button text-sm font-medium text-text-primary hover:bg-elevated/80 hover:border-cyan-500/40 transition-all"
-      >
-        <FcGoogle size={18} />
-        Continue with Google
-      </button>
-
-      {/* Divider */}
-      <div className="flex items-center gap-3 my-6">
-        <div className="flex-1 h-px bg-border" />
-        <span className="text-xs font-mono text-text-muted uppercase tracking-widest">or</span>
-        <div className="flex-1 h-px bg-border" />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Email */}
         <div>
-          <label htmlFor="login-email" className="text-label text-text-muted block mb-2">
+          <label htmlFor="signup-email" className="text-label text-text-muted block mb-2">
             Email
           </label>
           <div className="relative">
             <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
             <input
               type="email"
-              id="login-email"
+              id="signup-email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -118,19 +97,19 @@ export default function LoginForm({
 
         {/* Password */}
         <div>
-          <label htmlFor="login-password" className="text-label text-text-muted block mb-2">
+          <label htmlFor="signup-password" className="text-label text-text-muted block mb-2">
             Password
           </label>
           <div className="relative">
             <Lock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
             <input
               type={showPassword ? 'text' : 'password'}
-              id="login-password"
+              id="signup-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter password"
-              autoComplete="current-password"
+              autoComplete="new-password"
               className="w-full pl-10 pr-11 py-3 bg-elevated border border-border rounded-button text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
             />
             <button
@@ -144,21 +123,6 @@ export default function LoginForm({
           </div>
         </div>
 
-        {/* Forgot password */}
-        <div className="-mt-2 text-left">
-          {onForgotPassword ? (
-            <button
-              type="button"
-              onClick={onForgotPassword}
-              className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors"
-            >
-              Forgot password
-            </button>
-          ) : (
-            <span className="text-xs text-cyan-400/70">Forgot password</span>
-          )}
-        </div>
-
         {/* Error */}
         {error && (
           <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-button">
@@ -167,9 +131,26 @@ export default function LoginForm({
         )}
 
         <NeoButton type="submit" disabled={isSubmitting} className="w-full justify-center">
-          {isSubmitting ? 'Signing in…' : 'Sign In'}
+          {isSubmitting ? 'Creating account…' : 'Sign Up'}
         </NeoButton>
       </form>
+
+      {/* Divider */}
+      <div className="flex items-center gap-3 my-6">
+        <div className="flex-1 h-px bg-border" />
+        <span className="text-xs font-mono text-text-muted uppercase tracking-widest">or</span>
+        <div className="flex-1 h-px bg-border" />
+      </div>
+
+      {/* Continue with Google */}
+      <button
+        type="button"
+        onClick={onGoogleAuth}
+        className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-elevated border border-border rounded-button text-sm font-medium text-text-primary hover:bg-elevated/80 hover:border-cyan-500/40 transition-all"
+      >
+        <FcGoogle size={18} />
+        Continue with Google
+      </button>
     </div>
   );
 }
