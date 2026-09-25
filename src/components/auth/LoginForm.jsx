@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Lock, Mail, Eye, EyeOff } from 'lucide-react';
-import { FcGoogle } from 'react-icons/fc';
+import { Lock, User, Eye, EyeOff } from 'lucide-react';
 import NeoButton from '../ui/NeoButton';
 
 /**
@@ -9,27 +8,21 @@ import NeoButton from '../ui/NeoButton';
  * Structure (content only — styling pulled entirely from the existing
  * RTF design system: HoloCard-compatible spacing, `input` field classes
  * from Login.jsx, NeoButton, cyan accents):
- *   1. Header — title + "New user? Register Now" toggle
- *   2. Full-width "Continue with Google" button
- *   3. "or" divider
- *   4. Email field
- *   5. Password field w/ show/hide toggle
- *   6. "Forgot password" link (left-aligned)
- *   7. Full-width "Sign In" submit button
+ *   1. Header — title + "Activate Account" / "Register Account" toggle
+ *   2. RTF ID field
+ *   3. Password field w/ show/hide toggle
+ *   4. "Forgot password" link (left-aligned)
+ *   5. Full-width "Sign In" submit button
+ *
+ * No third-party (Google) sign-in — login is RTF ID + password only.
  *
  * @param {object} props
- * @param {() => void} props.onSwitchToSignup - called when "Register Now" is clicked
- * @param {(credentials: { email: string, password: string }) => void|Promise<void>} [props.onSubmit]
- * @param {() => void} [props.onGoogleAuth]
+ * @param {() => void} props.onSwitchToSignup - called when account registration is clicked
+ * @param {(credentials: { rtfId: string, password: string }) => void|Promise<void>} [props.onSubmit]
  * @param {() => void} [props.onForgotPassword]
  */
-export default function LoginForm({
-  onSwitchToSignup,
-  onSubmit,
-  onGoogleAuth,
-  onForgotPassword,
-}) {
-  const [email, setEmail] = useState('');
+export default function LoginForm({ onSwitchToSignup, onSubmit, onForgotPassword }) {
+  const [rtfId, setRtfId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
@@ -39,7 +32,7 @@ export default function LoginForm({
     e.preventDefault();
     setError('');
 
-    if (!email.trim() || !password) {
+    if (!rtfId.trim() || !password) {
       setError('Please fill in both fields.');
       return;
     }
@@ -53,7 +46,7 @@ export default function LoginForm({
 
     try {
       setIsSubmitting(true);
-      await onSubmit({ email: email.trim(), password });
+      await onSubmit({ rtfId: rtfId.trim(), password });
     } catch (err) {
       setError(err?.message || 'Unable to sign in. Please try again.');
     } finally {
@@ -67,50 +60,33 @@ export default function LoginForm({
       <div className="mb-6">
         <h2 className="text-h2 text-text-primary">Log in</h2>
         <p className="text-sm text-text-secondary mt-2">
-          New user?{' '}
+          Existing RTF member?{' '}
           <button
             type="button"
             onClick={onSwitchToSignup}
             className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
           >
-            Register Now
+            Activate Account
           </button>
         </p>
       </div>
 
-      {/* Continue with Google */}
-      <button
-        type="button"
-        onClick={onGoogleAuth}
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-elevated border border-border rounded-button text-sm font-medium text-text-primary hover:bg-elevated/80 hover:border-cyan-500/40 transition-all"
-      >
-        <FcGoogle size={18} />
-        Continue with Google
-      </button>
-
-      {/* Divider */}
-      <div className="flex items-center gap-3 my-6">
-        <div className="flex-1 h-px bg-border" />
-        <span className="text-xs font-mono text-text-muted uppercase tracking-widest">or</span>
-        <div className="flex-1 h-px bg-border" />
-      </div>
-
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Email */}
+        {/* RTF ID */}
         <div>
-          <label htmlFor="login-email" className="text-label text-text-muted block mb-2">
-            Email
+          <label htmlFor="login-rtfid" className="text-label text-text-muted block mb-2">
+            RTF ID
           </label>
           <div className="relative">
-            <Mail size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+            <User size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
             <input
-              type="email"
-              id="login-email"
+              type="text"
+              id="login-rtfid"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@gcoea.ac.in"
-              autoComplete="email"
+              value={rtfId}
+              onChange={(e) => setRtfId(e.target.value)}
+              placeholder="Enter your RTF ID"
+              autoComplete="username"
               className="w-full pl-10 pr-4 py-3 bg-elevated border border-border rounded-button text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/20 transition-all"
             />
           </div>

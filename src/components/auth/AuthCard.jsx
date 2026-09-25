@@ -2,31 +2,34 @@ import { useState } from 'react';
 import { X } from 'lucide-react';
 import HoloCard from '../ui/HoloCard';
 import LoginForm from './LoginForm';
-import SignUpForm from './SignUpForm';
+import RegisterForm from './RegisterForm';
 
 /**
  * AuthCard — single container that toggles between the "Log in" and
- * "Create Account" views, matching the reference screenshots structurally
- * while using the site's existing HoloCard / NeoButton / design tokens.
+ * "Create Account" views, using the site's existing HoloCard / NeoButton
+ * design tokens throughout.
+ *
+ * - Login is RTF ID + password only (see LoginForm.jsx).
+ * - "Create Account" uses the existing member-application RegisterForm.jsx
+ *   (name, collegeEnrollmentNo, collegeEmail, personalEmail, branch,
+ *   yearOfPassing, phone, domain, password) — same component the /register
+ *   page already drives, so both entry points submit through one
+ *   validated path (see utils/validators.js + services/authService.js).
  *
  * Usage:
  *   <AuthCard
- *     onLogin={async ({ identifier, password }) => { ... }}
- *     onSignUp={async ({ email, password }) => { ... }}
- *     onGoogleAuth={() => { ... }}
+ *     onLogin={async ({ rtfId, password }) => { ... }}
  *     onForgotPassword={() => { ... }}
  *   />
  *
  * Pass `onClose` if this is rendered inside a modal/dialog — it renders
- * the top-right "X" seen in the reference screenshots. Omit it (e.g. when
- * used as a full page like pages/Login.jsx) and the close button is hidden.
+ * the top-right "X". Omit it (e.g. used as a full page like pages/Login.jsx)
+ * and the close button is hidden.
  *
  * @param {object} props
  * @param {'login'|'signup'} [props.initialView='login']
  * @param {() => void} [props.onClose]
- * @param {(credentials: { identifier: string, password: string }) => void|Promise<void>} [props.onLogin]
- * @param {(data: { email: string, password: string }) => void|Promise<void>} [props.onSignUp]
- * @param {() => void} [props.onGoogleAuth]
+ * @param {(credentials: { rtfId: string, password: string }) => void|Promise<void>} [props.onLogin]
  * @param {() => void} [props.onForgotPassword]
  * @param {string} [props.className]
  */
@@ -34,15 +37,24 @@ export default function AuthCard({
   initialView = 'login',
   onClose,
   onLogin,
-  onSignUp,
-  onGoogleAuth,
   onForgotPassword,
   className = '',
 }) {
   const [view, setView] = useState(initialView);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  const switchToLogin = () => {
+    setSuccessMessage(null);
+    setView('login');
+  };
 
   return (
-    <HoloCard glow="cyan" className={`relative p-8 ${className}`}>
+    <HoloCard
+      glow="cyan"
+      className={`relative p-8 mx-auto transition-[max-width] duration-300 ${
+        view === 'login' ? 'max-w-sm' : 'max-w-2xl'
+      } ${className}`}
+    >
       {onClose && (
         <button
           type="button"
@@ -54,19 +66,50 @@ export default function AuthCard({
         </button>
       )}
 
-      {view === 'login' ? (
+      {view === 'login' && (
         <LoginForm
           onSwitchToSignup={() => setView('signup')}
           onSubmit={onLogin}
-          onGoogleAuth={onGoogleAuth}
           onForgotPassword={onForgotPassword}
         />
-      ) : (
-        <SignUpForm
-          onSwitchToLogin={() => setView('login')}
-          onSubmit={onSignUp}
-          onGoogleAuth={onGoogleAuth}
-        />
+      )}
+
+      {view === 'signup' && successMessage && (
+        <div className="text-center space-y-3 py-4">
+          <p className="text-emerald-400 text-sm">{successMessage}</p>
+          <p className="text-sm text-text-muted">
+            You'll be able to log in once your domain admin approves your request.
+          </p>
+          <button
+            type="button"
+            onClick={switchToLogin}
+            className="text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium mt-2"
+          >
+            Back to Log in
+          </button>
+        </div>
+      )}
+
+      {view === 'signup' && !successMessage && (
+        <div>
+          <div className="mb-6">
+            <h2 className="text-h2 text-text-primary">Create Account</h2>
+            <p className="text-xs text-text-muted mt-1 uppercase tracking-wide">
+              For existing RTF members only
+            </p>
+            <p className="text-sm text-text-secondary mt-2">
+              Already have an account?{' '}
+              <button
+                type="button"
+                onClick={switchToLogin}
+                className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium"
+              >
+                Log in
+              </button>
+            </p>
+          </div>
+          <RegisterForm onSuccess={setSuccessMessage} />
+        </div>
       )}
     </HoloCard>
   );

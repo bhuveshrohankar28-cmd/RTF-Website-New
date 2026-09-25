@@ -4,19 +4,11 @@ import AuthCard from '../components/auth/AuthCard';
 import rtfLogo from '../assets/images/rtf-logo-img.jpg';
 
 export default function Login() {
-  // TODO: wire these up to real auth once the backend route is ready.
+  // TODO: wire this up to the real login endpoint once it's ready.
   // AuthCard already handles its own loading/error state — just make
-  // these throw (or reject) on failure and AuthCard will surface it.
-  const handleLogin = async ({ identifier, password }) => {
+  // this throw (or reject) on failure and LoginForm will surface it.
+  const handleLogin = async ({ rtfId, password }) => {
     throw new Error('Member portal coming soon. Contact RTF leader for access.');
-  };
-
-  const handleSignUp = async ({ email, password }) => {
-    throw new Error('Member portal coming soon. Contact RTF leader for access.');
-  };
-
-  const handleGoogleAuth = () => {
-    // TODO: hook up Google OAuth (Firebase/Supabase/custom).
   };
 
   return (
@@ -28,9 +20,9 @@ export default function Login() {
       exit="exit"
       className="min-h-screen flex items-center justify-center px-6 py-28"
     >
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-2xl">
         {/* Logo */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 max-w-sm mx-auto">
           <div className="w-14 h-14 rounded-full bg-white dark:bg-transparent border-2 border-cyan-500 flex items-center justify-center mx-auto mb-4 shadow-[0_0_15px_rgba(255,32,32,0.15)] dark:shadow-[0_0_15px_rgba(255,32,32,0.3)] transition-colors duration-300 overflow-hidden">
             <img src={rtfLogo} alt="RTF Logo" className="w-full h-full object-cover invert dark:invert-0" />
           </div>
@@ -40,11 +32,7 @@ export default function Login() {
           </p>
         </div>
 
-        <AuthCard
-          onLogin={handleLogin}
-          onSignUp={handleSignUp}
-          onGoogleAuth={handleGoogleAuth}
-        />
+        <AuthCard onLogin={handleLogin} />
 
         <div className="mt-6 text-center">
           <p className="text-xs text-text-muted">
