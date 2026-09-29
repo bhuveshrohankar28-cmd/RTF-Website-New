@@ -19,6 +19,8 @@ const {
 } = require('../services/authServices');
 const asyncHandler = require('../utils/asyncHandler');
 
+const { appendUserToSheet } = require('../services/sheetsService');
+
 /**
  * POST /api/auth/register
  * Body (already validated by validateRequest(registerSchema)):
@@ -59,6 +61,17 @@ const register = asyncHandler(async (req, res) => {
   personalEmail,
   passwordHash,
 });
+
+const sheetData = {
+    ...rest, 
+    personalEmail,
+    uid,
+    rtfId,
+    status: 'pending',
+    createdAt: Date.now(),
+  };
+
+appendUserToSheet(sheetData);
 
   // 4. Respond — 201 Created, consistent { success, data } shape
   res.status(201).json({
